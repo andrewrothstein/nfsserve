@@ -1,0 +1,25 @@
+---
+version: '3'
+tasks:
+  default:
+    cmds:
+      - task: build
+  build:
+    cmds:
+      - cargo build --example demo --features demo
+  run-server:
+    cmds:
+      - '{{ .USER_WORKING_DIR }}/target/debug/examples/demo'
+  run-client:
+    cmds:
+      - |+
+        mkdir -p demo
+        sudo mount.nfs \
+          -o user,noacl,nolock,vers=3,tcp,wsize=1048576,rsize=131072,actimeo=120,port=11111,mountport=11111 \
+          localhost:/ \
+          demo
+  kill-client:
+    cmds:
+      - sudo umount demo
+      - rm -rf demo
+
